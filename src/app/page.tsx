@@ -14,7 +14,7 @@ export default async function Home() {
         <div className="mb-8 text-center">
           <h1 className="text-4xl font-bold text-white">Equipe Interne</h1>
           <p className="mt-2 text-blue-200">
-            Gestion des taches de l&apos;equipe
+            Gestion E-Commerce &mdash; Confirmation &amp; Reclamation
           </p>
         </div>
         <LoginForm />
