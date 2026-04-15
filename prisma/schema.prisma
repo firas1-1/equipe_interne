@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  isAdmin   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  orders      Order[]
+  assignments DailyAssignment[]
+  kilometres  Kilometre[]
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+  type        OrderType
+  status      OrderStatus @default(PENDING)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  admin   User   @relation(fields: [adminId], references: [id])
+  adminId String
+}
+
+model DailyAssignment {
+  id       String   @id @default(cuid())
+  date     DateTime @db.Date
+  roleType RoleType
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@unique([userId, date])
+}
+
+model Kilometre {
+  id    String   @id @default(cuid())
+  date  DateTime @db.Date
+  value Float
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  @@unique([userId, date])
+}
+
+enum OrderType {
+  RECLAMATION
+  CONFIRMATION
+}
+
+enum OrderStatus {
+  PENDING
+  DONE
+}
+
+enum RoleType {
+  RECLAMATION
+  CONFIRMATION
+}
