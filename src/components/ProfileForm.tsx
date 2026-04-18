@@ -14,14 +14,11 @@ export default function ProfileForm({
   function handleSubmit(formData: FormData) {
     setMessage(null);
     startTransition(async () => {
-      try {
-        await updateProfile(formData);
+      const result = await updateProfile(formData);
+      if (result.success) {
         setMessage({ type: "success", text: "Profil mis a jour avec succes" });
-      } catch (e: unknown) {
-        setMessage({
-          type: "error",
-          text: e instanceof Error ? e.message : "Une erreur est survenue",
-        });
+      } else {
+        setMessage({ type: "error", text: result.error ?? "Une erreur est survenue" });
       }
     });
   }
@@ -41,9 +38,7 @@ export default function ProfileForm({
       )}
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Nom
-        </label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">Nom</label>
         <input
           name="name"
           required
@@ -53,9 +48,7 @@ export default function ProfileForm({
       </div>
 
       <div>
-        <label className="mb-1 block text-sm font-medium text-gray-700">
-          Email
-        </label>
+        <label className="mb-1 block text-sm font-medium text-gray-700">Email</label>
         <input
           name="email"
           type="email"

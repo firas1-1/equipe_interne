@@ -47,35 +47,43 @@ export async function logout() {
 
 // ─── Profile ───────────────────────────────────────────���────────────────
 
-export async function updateProfile(formData: FormData) {
-  const session = await getSession();
-  if (!session) throw new Error("Non autorise");
+export async function updateProfile(
+  formData: FormData
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await getSession();
+    if (!session) return { success: false, error: "Non autorise" };
 
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const currentPassword = formData.get("currentPassword") as string;
-  const newPassword = formData.get("newPassword") as string;
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const currentPassword = formData.get("currentPassword") as string;
+    const newPassword = formData.get("newPassword") as string;
 
-  const user = await prisma.user.findUnique({ where: { id: session.userId } });
-  if (!user) throw new Error("Utilisateur non trouve");
+    const user = await prisma.user.findUnique({ where: { id: session.userId } });
+    if (!user) return { success: false, error: "Utilisateur non trouve" };
 
-  const validPassword = await bcrypt.compare(currentPassword, user.password);
-  if (!validPassword) throw new Error("Mot de passe actuel incorrect");
+    const validPassword = await bcrypt.compare(currentPassword, user.password);
+    if (!validPassword) return { success: false, error: "Mot de passe actuel incorrect" };
 
-  if (email !== user.email) {
-    const existing = await prisma.user.findUnique({ where: { email } });
-    if (existing) throw new Error("Cet email est deja utilise");
+    if (email !== user.email) {
+      const existing = await prisma.user.findUnique({ where: { email } });
+      if (existing) return { success: false, error: "Cet email est deja utilise" };
+    }
+
+    const data: { name: string; email: string; password?: string } = { name, email };
+    if (newPassword) {
+      data.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    await prisma.user.update({ where: { id: session.userId }, data });
+
+    revalidatePath("/equipe/profil");
+    revalidatePath("/admin/profil");
+
+    return { success: true };
+  } catch {
+    return { success: false, error: "Une erreur est survenue, veuillez reessayer" };
   }
-
-  const data: { name: string; email: string; password?: string } = { name, email };
-  if (newPassword) {
-    data.password = await bcrypt.hash(newPassword, 10);
-  }
-
-  await prisma.user.update({ where: { id: session.userId }, data });
-
-  revalidatePath("/equipe/profil");
-  revalidatePath("/admin/profil");
 }
 
 // ─── Orders (Admin) ─────────────────────────────────────────────────────
