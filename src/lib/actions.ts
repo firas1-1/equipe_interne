@@ -22,22 +22,31 @@ export async function login(formData: FormData) {
   redirect(user.isAdmin ? "/admin" : "/equipe");
 }
 
-export async function register(formData: FormData) {
-  const name = formData.get("name") as string;
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const isAdmin = formData.get("isAdmin") === "on";
+export async function createMember(
+  formData: FormData
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    const session = await getSession();
+    if (!session?.isAdmin) return { success: false, error: "Non autorise" };
 
-  const existing = await prisma.user.findUnique({ where: { email } });
-  if (existing) throw new Error("Cet email est deja utilise");
+    const name = formData.get("name") as string;
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const isAdmin = formData.get("isAdmin") === "on";
 
-  const hashed = await bcrypt.hash(password, 10);
-  const user = await prisma.user.create({
-    data: { name, email, password: hashed, isAdmin },
-  });
+    const existing = await prisma.user.findUnique({ where: { email } });
+    if (existing) return { success: false, error: "Cet email est deja utilise" };
 
-  await createSession({ userId: user.id, isAdmin: user.isAdmin });
-  redirect(user.isAdmin ? "/admin" : "/equipe");
+    const hashed = await bcrypt.hash(password, 10);
+    await prisma.user.create({
+      data: { name, email, password: hashed, isAdmin },
+    });
+
+    revalidatePath("/admin/equipe");
+    return { success: true };
+  } catch {
+    return { success: false, error: "Une erreur est survenue" };
+  }
 }
 
 export async function logout() {

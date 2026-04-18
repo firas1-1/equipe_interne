@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { assignDailyRole, autoRotateRoles } from "@/lib/actions";
+import { autoRotateRoles } from "@/lib/actions";
 import RoleAssignmentClient from "@/components/RoleAssignmentClient";
+import CreateMemberForm from "@/components/CreateMemberForm";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +28,11 @@ export default async function EquipePage() {
 
   return (
     <div>
+      <div className="mb-8 rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200">
+        <h2 className="mb-4 text-lg font-semibold text-gray-800">Creer un compte</h2>
+        <CreateMemberForm />
+      </div>
+
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Gestion Equipe</h1>
         <form action={autoRotateRoles}>
