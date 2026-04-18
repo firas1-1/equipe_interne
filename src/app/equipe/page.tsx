@@ -31,9 +31,18 @@ export default async function EquipePage() {
   const totalKm = user.kilometres.reduce((s, k) => s + k.value, 0);
 
   const orders = await prisma.order.findMany({
-    where: todayRole ? { type: todayRole } : {},
+    where: {
+      ...(todayRole ? { type: todayRole } : {}),
+      OR: [
+        { assignedUserId: null },
+        { assignedUserId: session.userId },
+      ],
+    },
     orderBy: { createdAt: "desc" },
-    include: { admin: { select: { name: true } } },
+    include: {
+      admin: { select: { name: true } },
+      assignedTo: { select: { name: true } },
+    },
   });
 
   return (
@@ -137,6 +146,11 @@ export default async function EquipePage() {
                   >
                     {order.type}
                   </span>
+                  {order.assignedTo && (
+                    <span className="rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-700">
+                      Pour moi
+                    </span>
+                  )}
                 </div>
                 {order.description && (
                   <p className="mt-0.5 text-sm text-gray-500">

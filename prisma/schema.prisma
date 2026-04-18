@@ -15,9 +15,10 @@ model User {
   isAdmin   Boolean  @default(false)
   createdAt DateTime @default(now())
 
-  orders      Order[]
-  assignments DailyAssignment[]
-  kilometres  Kilometre[]
+  orders         Order[]  @relation("AdminOrders")
+  assignedOrders Order[]  @relation("AssignedOrders")
+  assignments    DailyAssignment[]
+  kilometres     Kilometre[]
 }
 
 model Order {
@@ -29,8 +30,10 @@ model Order {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  admin   User   @relation(fields: [adminId], references: [id])
-  adminId String
+  admin          User    @relation("AdminOrders", fields: [adminId], references: [id])
+  adminId        String
+  assignedTo     User?   @relation("AssignedOrders", fields: [assignedUserId], references: [id])
+  assignedUserId String?
 }
 
 model DailyAssignment {

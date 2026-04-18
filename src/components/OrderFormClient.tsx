@@ -3,7 +3,11 @@
 import { createOrder } from "@/lib/actions";
 import { useRef, useState, useTransition } from "react";
 
-export default function OrderFormClient() {
+export default function OrderFormClient({
+  members,
+}: {
+  members: { id: string; name: string }[];
+}) {
   const formRef = useRef<HTMLFormElement>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
@@ -39,6 +43,7 @@ export default function OrderFormClient() {
           {message.text}
         </div>
       )}
+
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">Titre</label>
@@ -60,6 +65,23 @@ export default function OrderFormClient() {
           </select>
         </div>
       </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          Assigner a un membre{" "}
+          <span className="font-normal text-gray-400">(optionnel)</span>
+        </label>
+        <select
+          name="assignedUserId"
+          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+        >
+          <option value="">— Tous les membres du role —</option>
+          {members.map((m) => (
+            <option key={m.id} value={m.id}>{m.name}</option>
+          ))}
+        </select>
+      </div>
+
       <div>
         <label className="mb-1 block text-sm font-medium text-gray-700">Description</label>
         <textarea
@@ -69,6 +91,7 @@ export default function OrderFormClient() {
           placeholder="Description (optionnel)"
         />
       </div>
+
       <button
         type="submit"
         disabled={isPending}
