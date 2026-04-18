@@ -1,6 +1,11 @@
 import { prisma } from "@/lib/prisma";
-import { createOrder, deleteOrder } from "@/lib/actions";
+import { deleteOrder } from "@/lib/actions";
 import OrderFormClient from "@/components/OrderFormClient";
+
+async function deleteOrderAction(formData: FormData): Promise<void> {
+  "use server";
+  await deleteOrder(formData);
+}
 
 export const dynamic = "force-dynamic";
 
@@ -72,7 +77,7 @@ export default async function AdminPage() {
                   {order.createdAt.toLocaleDateString("fr-FR")}
                 </p>
               </div>
-              <form action={deleteOrder}>
+              <form action={deleteOrderAction}>
                 <input type="hidden" name="id" value={order.id} />
                 <button
                   type="submit"

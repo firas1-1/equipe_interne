@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
-import { autoRotateRoles } from "@/lib/actions";
 import RoleAssignmentClient from "@/components/RoleAssignmentClient";
 import CreateMemberForm from "@/components/CreateMemberForm";
+import AutoRotateButton from "@/components/AutoRotateButton";
 
 export const dynamic = "force-dynamic";
 
@@ -35,14 +35,7 @@ export default async function EquipePage() {
 
       <div className="mb-6 flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Gestion Equipe</h1>
-        <form action={autoRotateRoles}>
-          <button
-            type="submit"
-            className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-indigo-700"
-          >
-            Rotation auto demain
-          </button>
-        </form>
+        <AutoRotateButton />
       </div>
 
       <div className="rounded-xl bg-white shadow-sm ring-1 ring-gray-200">

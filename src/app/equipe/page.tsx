@@ -3,6 +3,11 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { toggleOrderDone } from "@/lib/actions";
 
+async function toggleAction(formData: FormData): Promise<void> {
+  "use server";
+  await toggleOrderDone(formData);
+}
+
 export const dynamic = "force-dynamic";
 
 export default async function EquipePage() {
@@ -85,7 +90,7 @@ export default async function EquipePage() {
                 order.status === "DONE" ? "bg-gray-50" : ""
               }`}
             >
-              <form action={toggleOrderDone}>
+              <form action={toggleAction}>
                 <input type="hidden" name="id" value={order.id} />
                 <button
                   type="submit"
