@@ -223,29 +223,3 @@ export async function autoRotateRoles(): Promise<ActionResult> {
   }
 }
 
-// ─── Kilometres ──────────────────────────────────────────────────────────
-
-export async function addKilometres(formData: FormData): Promise<ActionResult> {
-  try {
-    const session = await getSession();
-    if (!session?.isAdmin) return { success: false, error: "Acces refuse" };
-
-    const userId = formData.get("userId") as string;
-    const value = parseFloat(formData.get("value") as string);
-    const date = new Date(formData.get("date") as string);
-
-    if (!userId) return { success: false, error: "Veuillez choisir un membre" };
-    if (isNaN(value) || value <= 0) return { success: false, error: "Valeur de kilometres invalide" };
-
-    await prisma.kilometre.upsert({
-      where: { userId_date: { userId, date } },
-      update: { value },
-      create: { userId, date, value },
-    });
-    revalidatePath("/admin/kilometres");
-    return { success: true };
-  } catch (e) {
-    console.error("addKilometres error:", e);
-    return { success: false, error: "Erreur lors de l'ajout des kilometres" };
-  }
-}

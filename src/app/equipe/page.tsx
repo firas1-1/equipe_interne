@@ -21,14 +21,12 @@ export default async function EquipePage() {
     where: { id: session.userId },
     include: {
       assignments: { where: { date: today } },
-      kilometres: { orderBy: { date: "desc" }, take: 10 },
     },
   });
 
   if (!user) redirect("/");
 
   const todayRole = user.assignments[0]?.roleType || null;
-  const totalKm = user.kilometres.reduce((s, k) => s + k.value, 0);
 
   const orders = await prisma.order.findMany({
     where: {
@@ -47,7 +45,7 @@ export default async function EquipePage() {
 
   return (
     <div>
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
+      <div className="mb-6 grid gap-4 sm:grid-cols-2">
         <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
           <p className="text-sm text-gray-500">Mon role aujourd&apos;hui</p>
           {todayRole ? (
@@ -68,12 +66,6 @@ export default async function EquipePage() {
           <p className="text-sm text-gray-500">Ordres a traiter</p>
           <p className="mt-1 text-xl font-bold text-blue-600">
             {orders.filter((o) => o.status === "PENDING").length}
-          </p>
-        </div>
-        <div className="rounded-xl bg-white p-5 shadow-sm ring-1 ring-gray-200">
-          <p className="text-sm text-gray-500">Mes kilometres (total)</p>
-          <p className="mt-1 text-xl font-bold text-indigo-600">
-            {totalKm.toFixed(1)} km
           </p>
         </div>
       </div>

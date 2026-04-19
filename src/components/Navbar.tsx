@@ -28,9 +28,6 @@ export default function Navbar({
               <Link href="/admin/equipe" className="text-sm font-medium text-gray-600 hover:text-blue-600">
                 Equipe
               </Link>
-              <Link href="/admin/kilometres" className="text-sm font-medium text-gray-600 hover:text-blue-600">
-                Kilometres
-              </Link>
             </div>
           )}
         </div>
