@@ -28,6 +28,9 @@ export default function Navbar({
               <Link href="/admin/equipe" className="text-sm font-medium text-gray-600 hover:text-blue-600">
                 Equipe
               </Link>
+              <Link href="/admin/performance" className="text-sm font-medium text-gray-600 hover:text-blue-600">
+                Performance
+              </Link>
             </div>
           )}
         </div>
