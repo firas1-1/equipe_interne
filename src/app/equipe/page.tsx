@@ -157,6 +157,11 @@ export default async function EquipePage() {
                     {order.description}
                   </p>
                 )}
+                {order.notes && (
+                  <p className="mt-1 rounded-md bg-yellow-50 px-2 py-1 text-sm text-yellow-800 ring-1 ring-yellow-200">
+                    <span className="font-medium">Note :</span> {order.notes}
+                  </p>
+                )}
                 <p className="mt-0.5 text-xs text-gray-400">
                   Par {order.admin.name} &middot;{" "}
                   {order.createdAt.toLocaleDateString("fr-FR")}

@@ -92,6 +92,19 @@ export default function OrderFormClient({
         />
       </div>
 
+      <div>
+        <label className="mb-1 block text-sm font-medium text-gray-700">
+          Notes{" "}
+          <span className="font-normal text-gray-400">(optionnel)</span>
+        </label>
+        <textarea
+          name="notes"
+          rows={2}
+          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 text-gray-900 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 focus:outline-none"
+          placeholder="Notes internes, instructions supplementaires..."
+        />
+      </div>
+
       <button
         type="submit"
         disabled={isPending}

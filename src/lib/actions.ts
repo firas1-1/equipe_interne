@@ -110,13 +110,14 @@ export async function createOrder(formData: FormData): Promise<ActionResult> {
 
     const title = (formData.get("title") as string)?.trim();
     const description = formData.get("description") as string;
+    const notes = (formData.get("notes") as string)?.trim() || null;
     const type = formData.get("type") as "RECLAMATION" | "CONFIRMATION";
     const assignedUserId = (formData.get("assignedUserId") as string) || null;
 
     if (!title) return { success: false, error: "Le titre est requis" };
 
     await prisma.order.create({
-      data: { title, description, type, adminId: session.userId, assignedUserId: assignedUserId || undefined },
+      data: { title, description, notes, type, adminId: session.userId, assignedUserId: assignedUserId || undefined },
     });
     revalidatePath("/admin");
     revalidatePath("/equipe");

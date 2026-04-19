@@ -25,6 +25,7 @@ model Order {
   id          String      @id @default(cuid())
   title       String
   description String?
+  notes       String?
   type        OrderType
   status      OrderStatus @default(PENDING)
   createdAt   DateTime    @default(now())
